@@ -4,7 +4,9 @@ from django.contrib import auth
 from django.contrib.auth import authenticate
 from django.contrib import messages
 
+from . forms import ContactForm
 from . models import Products
+from . models import Contact
 from django.views import View
 # Create your views here.
 
@@ -30,8 +32,29 @@ class ServicesView(View):
 class ContactView(View):
 
     def get(self, request):
-        return render(request, 'contact.html')
+        form = ContactForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'contact.html', context)
     
+    def post(self, request):
+        form = ContactForm(request.POST or None)
+        if form.is_valid():
+            contact = Contact.objects.create(
+                name = form.cleaned_data['name'],
+                email = form.cleaned_data['email'],
+                subject=  form.cleaned_data['subject'],
+                message = form.cleaned_data['message']
+            )
+            form = ContactForm()
+            messages.info(request, 'Thanks for contacting us. Well get  back to you soon.')
+        else:
+            messages.error(request, 'error sending information')
+        context = {
+            'form': form
+        }
+        return redirect('contact')
 class ProductView(View):
 
     def get(self, request):
