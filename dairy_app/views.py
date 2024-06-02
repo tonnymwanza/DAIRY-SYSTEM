@@ -4,13 +4,18 @@ from django.contrib import auth
 from django.contrib.auth import authenticate
 from django.contrib import messages
 
+from . models import Products
 from django.views import View
 # Create your views here.
 
 class HomeView(View):
 
     def get(self, request):
-        return render(request, 'index.html')    
+        product_list = Products.objects.all()
+        context= {
+            'product_list': product_list
+        }
+        return render(request, 'index.html', context)    
 
 class AboutView(View):
 
@@ -30,7 +35,11 @@ class ContactView(View):
 class ProductView(View):
 
     def get(self, request):
-        return render(request, 'product.html')
+        product_list = Products.objects.all()
+        context = {
+            'product_list': product_list
+        }
+        return render(request, 'product.html', context)
 
 def user_register(request): # user registration
     if request.method == 'POST':
