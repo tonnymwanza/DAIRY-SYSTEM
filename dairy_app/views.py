@@ -3,11 +3,14 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 from django.contrib.auth import authenticate
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from . forms import ContactForm
 from . models import Products
 from . models import Contact
 from django.views import View
+from . models import AnimalSelection
+from . forms import AnimalSelectionForm
 # Create your views here.
 
 class HomeView(View):
@@ -64,7 +67,7 @@ class ProductView(View):
         }
         return render(request, 'product.html', context)
 
-def user_register(request): # user registration
+def register(request): # user registration
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
@@ -74,19 +77,19 @@ def user_register(request): # user registration
         if password == password2:
             if User.objects.filter(username=username).exists():
                 messages.error(request, 'the username is in user. try another one')
-                return redirect('user_register')
+                return redirect('register')
             elif User.objects.filter(email=email).exists():
                 messages.error(request, 'the email is in use. find another one')
                 return redirect('user_register')
             else:
                 user = User.objects.create_user(username = username, email = email, password = password)
-                return redirect('user_login')
+                return redirect('signin')
         else:
             messages.error(request, 'ensure the passwords are matching')
-            return redirect('user_register')
+            return redirect('register')
     return render(request, 'register.html')
 
-def user_login(request): # user login
+def signin(request): # user login
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -100,5 +103,35 @@ def user_login(request): # user login
                 return redirect('home')
         else:
             messages.error(request, 'invalid details provided. make sure the password or username is correct')
-            return redirect('user_login')
+            return redirect('signin')
     return render(request, 'login.html')
+
+@login_required(login_url='signin')
+def selection(request):
+    form = AnimalSelectionForm()
+    if request.method == 'POST':
+        form = AnimalSelectionForm(request.POST or None)
+        if form.is_valid():
+            animal_object = AnimalSelection.objects.create(
+                animal_id = form.cleaned_data['animal_id'],
+                breed = form.cleaned_data['breed'],
+                animal_age = form.cleaned_data['animal_age'],
+                gender = form.cleaned_data['gender'],
+                health_condition = form.cleaned_data['health_condition']
+            )
+            form = AnimalSelectionForm()
+            messages.success(request, 'Info sent successfully')
+        else:
+            messages.error(request, 'error sending information')
+    context = {
+        'form': form
+    }
+    return render(request, 'selection.html', context)
+
+@login_required(login_url='signin')
+def breeding(request):
+    return render(request, 'breeding.html')
+
+@login_required(login_url='signin')
+def milking(request):
+    return render(request, 'milking.html')

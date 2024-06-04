@@ -12,3 +12,10 @@ class Contact(models.Model):
     email = models.EmailField()
     subject = models.CharField(max_length=50)
     message = models.TextField()
+
+class AnimalSelection(models.Model):
+    animal_id = models.IntegerField()
+    breed = models.CharField(max_length=50)
+    animal_age = models.IntegerField()
+    gender = models.CharField(max_length=50)
+    body_condition = models.CharField(max_length=50)

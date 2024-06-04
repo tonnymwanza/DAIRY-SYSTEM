@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="{% static 'style.css' %}"/>
+    </head>
+    <body>
+        <div>
+            <div>
+                <h3 style="text-align: center; text-decoration: underline; margin-top: 30px; font-size: 30px; font-family: sans-serif;">Fill the animal Selection</h3>
+            </div>
+            <div style="text-align: center;">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div>
+                        {{form.animal_id}}
+                    </div>
+                    <div>
+                        <label style="margin-top: 20px;">Select animal breed</label><br>
+                        {{form.breed}}
+                    </div>
+                    <div>
+                        {{form.animal_age}}
+                    </div>
+                    <div>
+                        <label style="margin-top: 20px;">Select the animal gender</label><br>
+                        {{form.gender}}
+                    </div>
+                    <div>
+                        {{form.health_condition}}
+                    </div>
+                    <div>
+                        <button type="submit">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

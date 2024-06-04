@@ -16,8 +16,11 @@ urlpatterns = [
     path('services', ServicesView.as_view(), name='services'),
     path('contact', ContactView.as_view(), name='contact'),
     path('products', ProductView.as_view(), name='products'),
-    path('user_register', views.user_register, name='user_register'),
-    path('user_login', views.user_login, name='user_login'),
+    path('register', views.register, name='register'),
+    path('signin', views.signin, name='signin'),
+    path('selection', views.selection, name='selection'),
+    path('breeding', views.breeding, name='breeding'),
+    path('milking', views.milking, name='milking'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
